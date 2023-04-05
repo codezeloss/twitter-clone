@@ -6,7 +6,8 @@ import googleIcon from "../public/assets/google-icon.png";
 
 const LoginPage = ({ providers }) => {
   const { data, status } = useSession();
-  console.log({ data, status })
+  console.log({ data, status });
+
   const router = useRouter();
 
   if (status === "loading") {
@@ -14,7 +15,7 @@ const LoginPage = ({ providers }) => {
   }
 
   if (data) {
-    router.push("/")
+    router.push("/");
   }
 
   return (

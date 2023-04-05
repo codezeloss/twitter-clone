@@ -10,6 +10,12 @@ const UserSchema = new Schema({
   image: {
     type: String,
   },
+  cover: {
+    type: String,
+  },
+  bio: {
+    type: String,
+  },
   username: {
     type: String,
   },

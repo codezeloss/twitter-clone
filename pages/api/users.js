@@ -11,15 +11,21 @@ export default async function handle(req, res) {
 
   if (req.method === "PUT") {
     const { username } = req.body;
-
-    await User.findByIdAndUpdate(session.user.id, username);
+    await User.findByIdAndUpdate(session?.user.id, username);
     res.json("ok");
   }
 
   if (req.method === "GET") {
-    const id = req.query.id;
-
-    const user = await User.findById(id);
-    res.json({ user });
+    const { id, username } = req.query;
+    
+    const user = id
+      ? await User.findById(id)
+      : await User.findOne({ username });
+    
+    const follow = await Follower.findOne({
+      source: session.user.id,
+      destination: user._id,
+    });
+    res.json({ user, follow });
   }
 }

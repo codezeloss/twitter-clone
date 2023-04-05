@@ -1,59 +1,52 @@
-import useUserInfo from "@/hooks/useUserInfo";
+import { useEffect, useState } from "react";
+import useUserInfo from "../hooks/useUserInfo";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import axios from "axios";
 
-const UsernameForm = () => {
-  // GET user infos
+export default function UsernameForm() {
   const { userInfo, status } = useUserInfo();
   const [username, setUsername] = useState("");
   const router = useRouter();
 
-  //
   useEffect(() => {
     if (status === "loading") {
-      return "";
+      return;
     }
-
     if (username === "") {
-      const defaultUsername = userInfo?.email.split("@"[0]);
+      const defaultUsername = userInfo?.email?.split("@")[0];
       setUsername(defaultUsername);
     }
-  }, []);
+  }, [status]);
 
-  //
-  const handleFormSubmit = async (e) => {
+  async function handleFormSubmit(e) {
     e.preventDefault();
-    await axios.put("/api/posts", username);
+    await fetch("/api/users", {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username }),
+    });
     router.reload();
-  };
+  }
 
   if (status === "loading") {
     return "";
   }
-
   return (
     <div className="flex h-screen items-center justify-center">
       <form className="text-center" onSubmit={handleFormSubmit}>
         <h1 className="text-xl mb-2">Pick a username</h1>
         <input
-          className="block mb-2 bg-twitterBorder px-3 py-2 rounded-full outline-none"
           type="text"
+          className="block mb-1 bg-twitterBorder px-3 py-1 rounded-full"
           placeholder={"username"}
           value={username}
           onChange={(e) => {
             setUsername(e.target.value);
           }}
         />
-        <button
-          type="submit"
-          className="block bg-twitterBlue w-full rounded-full py-2"
-        >
+        <button className="block bg-twitterBlue w-full rounded-full py-1">
           Continue
         </button>
       </form>
     </div>
   );
-};
-
-export default UsernameForm;
+}
